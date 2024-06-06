@@ -1,3 +1,6 @@
+Start node
+docker compose up -d 
+
 ConfigMap, StatefulSet, Service<br>
 kubectl apply -f pg-config.yaml<br>
 kubectl apply -f pg-statefulset.yaml<br>
