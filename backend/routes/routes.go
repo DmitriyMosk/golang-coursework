@@ -33,7 +33,7 @@ func SetupRoutes(r *mux.Router, db *gorm.DB, jiraClient *jira.JiraClient, config
 	api.HandleFunc("/api/v1/resources/{id}", handlers.DeleteResource).Methods("DELETE")
 
 	// Применение middleware для аутентификации
-	// api.Use(middleware.JwtAuthentication)
+	api.Use(middleware.JwtAuthentication)
 
 	// Применение middleware для обработки таймаутов
 	api.Use(middleware.TimeoutMiddleware)
@@ -43,6 +43,6 @@ func SetupRoutes(r *mux.Router, db *gorm.DB, jiraClient *jira.JiraClient, config
 	apiV2.HandleFunc("/api/v2/projects", handlers.GetProjectsV2).Methods("GET")
 
 	apiV2.Use(middleware.TimeoutMiddleware)
-	//apiV2.Use(middleware.GzipMiddleware)
+	apiV2.Use(middleware.GzipMiddleware)
 
 }

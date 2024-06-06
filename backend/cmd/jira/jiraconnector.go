@@ -18,7 +18,7 @@ type PageInfo struct {
 }
 
 func UpdateProjectIssues(projectKey string) error {
-	url := fmt.Sprintf("%s/rest/api/2/search?jql=project=%s", config.GConfig.ProgramSettings.JiraURL, projectKey)
+	url := fmt.Sprintf("%s/rest/api/2/project/%s", config.GConfig.ProgramSettings.JiraURL, projectKey)
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {

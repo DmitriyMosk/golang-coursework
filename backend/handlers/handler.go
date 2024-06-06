@@ -22,12 +22,14 @@ func UpdateProjectV2(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Вызываем функцию обновления проекта по ключу
 	err := jira.UpdateProjectIssues(projectKey)
 	if err != nil {
 		http.Error(w, "Failed to update project issues", http.StatusInternalServerError)
 		return
 	}
 
+	// Возвращаем успешный статус
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Project issues updated successfully"))
 }
