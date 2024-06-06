@@ -11,7 +11,7 @@ import (
 )
 
 func Run() error { //TODO add goroutine
-	cfg, err := config.LoadConfig("configs/config.yml")
+	cfg, err := config.LoadConfig("../../../configs/connector_config.yaml")
 	if err != nil {
 		return err
 	}
