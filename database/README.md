@@ -1,8 +1,8 @@
-ConfigMap, StatefulSet, Service
-kubectl apply -f pg-config.yaml
-kubectl apply -f pg-statefulset.yaml
-kubectl apply -f pg-service.yaml
-
-Применение правил Deployment и Service для pgAdmin
-kubectl apply -f pgadmin-deployment.yaml
-kubectl apply -f pgadmin-service.yaml
+ConfigMap, StatefulSet, Service<br>
+kubectl apply -f pg-config.yaml<br>
+kubectl apply -f pg-statefulset.yaml<br>
+kubectl apply -f pg-service.yaml<br>
+<br>
+Применение правил Deployment и Service для pgAdmin<br>
+kubectl apply -f pgadmin-deployment.yaml<br>
+kubectl apply -f pgadmin-service.yaml<br>
