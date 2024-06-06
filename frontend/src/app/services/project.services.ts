@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IRequest} from "../models/request.model";
 import {ConfigurationService} from "./configuration.services";
@@ -15,18 +15,19 @@ export class ProjectServices {
   }
 
 
-  // @ts-ignore
-  getAll(page: number, searchName: String): Observable<IRequest>{
-    // TODO Написать запрос на получение всех проектов, учесть пагинацию, поиск
-  }
+  getAll(page: number, searchName: string): Observable<IRequest> {
+    const params = new HttpParams()
+        .set('page', page.toString())
+        .set('searchName', searchName);
 
-  // @ts-ignore
-  addProject(key: String): Observable<IRequest>{
-    // TODO Написать запрос на добавление проета в БД. Добавление происходит по ключу проекта
-  }
+    return this.http.get<IRequest>(`${this.urlPath}/api/v1/projects`, { params });
+}
 
-  // @ts-ignore
-  deleteProject(id: Number): Observable<IRequest> {
-    // TODO Написать запрос на удаление проекта. Удаление происходит по id проекта в БД.
-  }
+addProject(key: String): Observable<IRequest> {
+    return this.http.post<IRequest>(`${this.urlPath}/api/v1/projects`, { key });
+}
+
+deleteProject(id: Number): Observable<IRequest> {
+    return this.http.delete<IRequest>(`${this.urlPath}/api/v1/projects/${id}`);
+}
 }

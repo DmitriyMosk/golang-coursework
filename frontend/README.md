@@ -15,3 +15,16 @@ Go to the directory jira_analyzer/web/
 
 - Node.js
 - Angular
+
+su
+
+curl -fsSL https://deb.nodesource.com/setup_current.x | bash - &&\
+apt-get install -y nodejs 
+
+exit
+
+sudo apt install npm 
+
+sudo npm install -g @angular/cli@17
+
+ng serve

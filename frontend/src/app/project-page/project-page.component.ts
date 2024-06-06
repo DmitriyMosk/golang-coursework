@@ -26,7 +26,7 @@ export class ProjectPageComponent implements OnInit {
       this.pageInfo = projects.pageInfo
     },
       error => {
-        // TODO Обработать ошибки от сервера
+        this.showErrorMessage("Отсутсвует подключение к коннектору") //TODO Поверить
       })
   }
 
@@ -41,5 +41,8 @@ export class ProjectPageComponent implements OnInit {
   getSearchProjects() {
     this.pageInfo.currentPage = this.start_page;
     this.gty(this.pageInfo.currentPage);
+  }
+  showErrorMessage(msg: string){
+    alert(msg)
   }
 }

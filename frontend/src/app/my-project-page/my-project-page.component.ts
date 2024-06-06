@@ -25,7 +25,7 @@ export class MyProjectPageComponent implements OnInit {
       this.loading = false
       this.inited = true
     }, error => {
-      // TODO Обработать ошибки от сервера
+      this.showErrorMessage("Отсутсвует подключение к коннектору") //TODO Поверить
     })
   }
 
@@ -35,6 +35,10 @@ export class MyProjectPageComponent implements OnInit {
     }else if (this.checked.has(project.Name)){
       this.checked.delete(project.Name)
     }
+  }
+
+  showErrorMessage(msg: string){
+    alert(msg)
   }
 
 }

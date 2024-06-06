@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpParams} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {IRequest} from "../models/request.model";
 import {IRequestObject} from "../models/requestObj.model";
@@ -16,43 +16,36 @@ export class DatabaseProjectServices {
   }
 
 
-  // @ts-ignore
   getAll(): Observable<IRequest>{
-    // TODO Написать запрос на получение всех проектов
+    return this.http.get<IRequest>(`${this.urlPath}/api/v1/all-projects`);
   }
 
-  // @ts-ignore
   getProjectStatByID(id: string): Observable<IRequestObject> {
-    // TODO Написать запрос на получение статистики проекта по ID
+    return this.http.get<IRequestObject>(`${this.urlPath}/api/v1/project/${id}/statistics`);
   }
 
-  // @ts-ignore
   getComplitedGraph(taskNumber: string, projectName: Array<string>): Observable<IRequestObject> {
-    // TODO Написать запрос на получение сравнения
+    const params = new HttpParams().set('taskNumber', taskNumber).set('projectName', projectName.join(','));
+    return this.http.get<IRequestObject>(`${this.urlPath}/api/v1/completed-graph`, { params });
   }
 
-  // @ts-ignore
   getGraph(taskNumber: string, projectName: string): Observable<IRequestObject> {
-    // TODO Написать запрос на получение графа
+    return this.http.get<IRequestObject>(`${this.urlPath}/api/v1/graph`, { params: { taskNumber, projectName } });
   }
 
-  // @ts-ignore
   makeGraph(taskNumber: string, projectName: string): Observable<IRequestObject> {
-    // TODO Написать запрос на создание графа
+    return this.http.post<IRequestObject>(`${this.urlPath}/api/v1/graph`, { taskNumber, projectName });
   }
 
-  // @ts-ignore
   deleteGraphs(projectName: string): Observable<IRequestObject> {
-    // TODO Написать запрос на удаление графа
+    return this.http.delete<IRequestObject>(`${this.urlPath}/api/v1/graph/${projectName}`);
   }
 
-  // @ts-ignore
   isAnalyzed(projectName: string): Observable<IRequestObject>{
-    // TODO Написать запрос
+    return this.http.get<IRequestObject>(`${this.urlPath}/api/v1/is-analyzed/${projectName}`);
   }
 
-  // @ts-ignore
   isEmpty(projectName: string): Observable<IRequestObject>{
-    // TODO Написать запрос
+    return this.http.get<IRequestObject>(`${this.urlPath}/api/v1/is-empty/${projectName}`);
   }
 }

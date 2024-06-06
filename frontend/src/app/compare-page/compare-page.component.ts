@@ -31,7 +31,7 @@ export class ComparePageComponent implements OnInit {
       this.inited = true
     },
       error => {
-        // TODO Обработать ошибки от сервера
+        this.showErrorMessage("Отсутсвует подключение к коннектору") //TODO Поверить
       })
   }
 
