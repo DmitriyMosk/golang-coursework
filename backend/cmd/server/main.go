@@ -1,12 +1,16 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"time"
 
+	"golang-coursework/cmd/config"
+	"golang-coursework/cmd/jira"
+	"golang-coursework/database"
 	"golang-coursework/routes"
 	"golang-coursework/utils"
 
@@ -14,22 +18,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
-
-func initConfig() {
-	viper.SetConfigName("config")
-	viper.SetConfigType("json")
-	viper.AddConfigPath("./config/")
-	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("Error reading config file, %s", err)
-	}
-
-	requiredConfigs := []string{"port", "resourseTimeout", "analyticsTimeout", "dbUser", "dbPassword", "dbHost", "dbPort", "dbName", "jwtSecret"}
-	for _, config := range requiredConfigs {
-		if !viper.IsSet(config) {
-			log.Fatalf("The %s is not configured", config)
-		}
-	}
-}
 
 func setupLogger() {
 	logrus.SetFormatter(&logrus.JSONFormatter{})
@@ -53,11 +41,23 @@ func setupLogger() {
 }
 
 func main() {
-	initConfig()
+	var err error
+
+	config.GConfig, err = config.InitConfig("D:/go_cursejob/golang-coursework/backend/config")
+
+	if err != nil {
+		logrus.Fatalf("Failed to load config: %v", err)
+		fmt.Println("Can not read CFG")
+	}
+
 	setupLogger()
 
+	DB, err := database.InitDB(config.GConfig)
+
+	jiraClient := jira.NewJiraClient(config.GConfig.ProgramSettings.JiraURL)
+
 	r := mux.NewRouter()
-	routes.SetupRoutes(r)
+	routes.SetupRoutes(r, DB, jiraClient, &config.GConfig)
 
 	// Применяем GzipMiddleware ко всем маршрутам
 	r.Use(utils.GzipMiddleware)
@@ -74,6 +74,7 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	logrus.Infof("Starting server on port %s", port)
-	log.Fatal(srv.ListenAndServe())
+	http.Handle("/", r)
+	logrus.Infof("Server is running on port %d", config.GConfig.Port)
+	log.Fatal(srv.ListenAndServe(), r)
 }

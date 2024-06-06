@@ -1,0 +1,17 @@
+port: 8080
+resourseTimeout: 30
+analyticsTimeout: 30
+
+DBSettings:
+  DBUser: "your_db_user"
+  DBPassword: "your_db_password"
+  DBHost: "your_db_host"
+  DBPort: "5432"
+  DBName: "your_db_name"
+
+ProgramSettings:
+  JiraURL: "https://jfrog.atlassian.net"
+  ThreadCount: 10
+  IssueInOneRequest: 100
+  MaxTimeSleep: 2000
+  MinTimeSleep: 500
