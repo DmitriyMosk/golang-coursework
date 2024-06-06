@@ -1,0 +1,19 @@
+database:
+  user: ""
+  password: ""
+  host: ""
+  port: 5432
+  dbname: ""
+
+connector:
+  jira_url: "https://issues.apache.org/jira/"
+  jira_user: "jira_username"
+  jira_token: "jira_token"
+  issues_per_request: 50
+  max_retries: 5
+  initial_retry_delay: 2
+  max_retry_delay: 64
+
+server:
+  port: 8080
+  max_threads: 10
