@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"golang-coursework/cmd/config"
 	"golang-coursework/cmd/etl"
 	"golang-coursework/cmd/jira"
 	"net/http"
 	"strconv"
 
+	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 )
 
@@ -16,20 +18,25 @@ func UpdateProject(db *gorm.DB, jiraClient *jira.JiraClient, config *config.Conf
 }
 
 func UpdateProjectV2(w http.ResponseWriter, r *http.Request) {
+	// Получаем параметр строки запроса "project"
 	projectKey := r.URL.Query().Get("project")
+	fmt.Println("--------------------------------------------------------")
+	fmt.Println(projectKey)
+	fmt.Println("--------------------------------------------------------")
+
 	if projectKey == "" {
+		logrus.Error("Missing project key")
 		http.Error(w, "Missing project key", http.StatusBadRequest)
 		return
 	}
 
-	// Вызываем функцию обновления проекта по ключу
-	err := jira.UpdateProjectIssues(projectKey)
-	if err != nil {
+	// Обновляем задачи проекта
+	if err := jira.UpdateProjectIssues(projectKey); err != nil {
+		logrus.Errorf("Failed to update project issues: %v", err)
 		http.Error(w, "Failed to update project issues", http.StatusInternalServerError)
 		return
 	}
 
-	// Возвращаем успешный статус
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Project issues updated successfully"))
 }

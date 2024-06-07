@@ -24,6 +24,10 @@ type Project struct {
 	Name string `json:"name"`
 }
 
+type SearchResult struct {
+	Issues []Issue `json:"issues"`
+}
+
 var DB *gorm.DB
 
 func InitDB(cfg config.Config) (*gorm.DB, error) {

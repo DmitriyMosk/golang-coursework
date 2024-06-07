@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"strings"
 	"sync"
+
+	"github.com/sirupsen/logrus"
 )
 
 type PageInfo struct {
@@ -19,42 +21,53 @@ type PageInfo struct {
 
 func UpdateProjectIssues(projectKey string) error {
 	url := fmt.Sprintf("%s/rest/api/2/project/%s", config.GConfig.ProgramSettings.JiraURL, projectKey)
+	logrus.Infof("Requesting issues for project: %s", url) // Логирование URL
 	client := &http.Client{}
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
+		logrus.Errorf("Failed to create request: %v", err)
 		return err
 	}
 
 	resp, err := client.Do(req)
 	if err != nil {
+		logrus.Errorf("Failed to send request: %v", err)
 		return err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("Failed to get issues: %v", resp.Status)
+		logrus.Errorf("Failed to get issues: %v", resp.Status)
+		return fmt.Errorf("failed to get issues: %v", resp.Status)
 	}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
-
-	var issues struct {
+	var responseBody struct {
 		Issues []database.Issue `json:"issues"`
 	}
-	if err := json.Unmarshal(body, &issues); err != nil {
+	err = json.NewDecoder(resp.Body).Decode(&responseBody)
+	if err != nil {
+		logrus.Errorf("Failed to decode response body: %v", err)
 		return err
+	}
+
+	logrus.Infof("Number of issues found: %d", len(responseBody.Issues)) // Логирование количества задач
+
+	if len(responseBody.Issues) == 0 {
+		logrus.Warn("No issues found for the given project key")
 	}
 
 	// Multithreaded upload to DB
 	var wg sync.WaitGroup
-	for _, issue := range issues.Issues {
+	for _, issue := range responseBody.Issues {
 		wg.Add(1)
 		go func(issue database.Issue) {
 			defer wg.Done()
 			// Save issue to DB
-			database.DB.Create(&issue)
+			if err := database.DB.Create(&issue).Error; err != nil {
+				logrus.Errorf("Failed to save issue to DB: %v", err)
+			} else {
+				logrus.Infof("Successfully saved issue to DB: %s", issue.ID)
+			}
 		}(issue)
 	}
 	wg.Wait()
@@ -129,3 +142,11 @@ func GetProjects(limit, page int, search string) ([]database.Project, PageInfo, 
 func contains(str, substr string) bool {
 	return strings.Contains(strings.ToLower(str), strings.ToLower(substr))
 }
+
+/*
+
+fmt.Println("--------------------------------------------------------")
+fmt.Println(issues)
+fmt.Println("--------------------------------------------------------")
+
+*/

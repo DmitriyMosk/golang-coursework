@@ -11,8 +11,8 @@ import (
 	"golang-coursework/cmd/config"
 	"golang-coursework/cmd/jira"
 	"golang-coursework/database"
+	"golang-coursework/middleware"
 	"golang-coursework/routes"
-	"golang-coursework/utils"
 
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
@@ -60,7 +60,7 @@ func main() {
 	routes.SetupRoutes(r, DB, jiraClient, &config.GConfig)
 
 	// Применяем GzipMiddleware ко всем маршрутам
-	r.Use(utils.GzipMiddleware)
+	r.Use(middleware.GzipMiddleware)
 
 	port := viper.GetString("port")
 	if port == "" {

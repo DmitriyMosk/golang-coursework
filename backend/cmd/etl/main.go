@@ -31,12 +31,12 @@ func LoadIssues(db *gorm.DB, jiraClient *jira.JiraClient, projectKey string, thr
 					break
 				}
 
-				for _, issue := range issues {
+				for _, Issue := range issues {
 					dbIssue := database.Issue{
-						ID:          issue.ID,
-						Key:         issue.Key,
-						Summary:     issue.Fields.Summary,
-						Description: issue.Fields.Description,
+						ID:          Issue.ID,
+						Key:         Issue.Key,
+						Summary:     Issue.Summary,
+						Description: Issue.Description,
 					}
 
 					if err := db.Create(&dbIssue).Error; err != nil {
@@ -53,3 +53,13 @@ func LoadIssues(db *gorm.DB, jiraClient *jira.JiraClient, projectKey string, thr
 	wg.Wait()
 	return nil
 }
+
+/*
+dbIssue := database.Issue{
+						ID:          Issue.id,
+						Key:         issue.Key,
+						Summary:     issue.Fields.Summary,
+						Description: issue.Fields.Description,
+					}
+
+*/

@@ -3,6 +3,7 @@ package jira
 import (
 	"encoding/json"
 	"fmt"
+	"golang-coursework/database"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -20,7 +21,7 @@ func NewJiraClient(baseURL string) *JiraClient {
 	}
 }
 
-func (jc *JiraClient) GetIssues(projectKey string, startAt int, maxResults int) ([]Issue, error) {
+func (jc *JiraClient) GetIssues(projectKey string, startAt int, maxResults int) ([]database.Issue, error) {
 	url := fmt.Sprintf("%s/rest/api/2/search?jql=project=%s&startAt=%d&maxResults=%d", jc.BaseURL, projectKey, startAt, maxResults)
 
 	resp, err := jc.Client.Get(url)
@@ -38,23 +39,10 @@ func (jc *JiraClient) GetIssues(projectKey string, startAt int, maxResults int) 
 		return nil, err
 	}
 
-	var result SearchResult
+	var result database.SearchResult
 	if err := json.Unmarshal(body, &result); err != nil {
 		return nil, err
 	}
 
 	return result.Issues, nil
-}
-
-type SearchResult struct {
-	Issues []Issue `json:"issues"`
-}
-
-type Issue struct {
-	ID     string `json:"id"`
-	Key    string `json:"key"`
-	Fields struct {
-		Summary     string `json:"summary"`
-		Description string `json:"description"`
-	} `json:"fields"`
 }

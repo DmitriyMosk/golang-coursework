@@ -43,7 +43,5 @@ func InitConfig(path string) (GConfig Config, err error) {
 	}
 
 	err = viper.Unmarshal(&GConfig)
-	fmt.Println("GConfig")
-	fmt.Println(GConfig)
 	return
 }
