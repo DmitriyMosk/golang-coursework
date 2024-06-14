@@ -1,7 +1,5 @@
 CREATE TABLE project (id serial PRIMARY KEY, title TEXT);
-
 CREATE TABLE author (id serial PRIMARY KEY, name TEXT);
-
 CREATE TABLE issues (
     id serial PRIMARY KEY,
     projectId INT NOT NULL,
@@ -19,5 +17,5 @@ CREATE TABLE issues (
     timeSpent INT
 );
 
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO pguser;
-GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO pguser;
+-- GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO pguser;
+-- GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO pguser;
