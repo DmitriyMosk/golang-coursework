@@ -30,25 +30,26 @@ export class MyProjectComponent implements OnInit{
     this.processed=false;
     this.settings = false;
     this.checkboxes.push(new SettingBox("Гистограмма, отражающая время, которое задачи провели в открытом состоянии", false, 1 ))
-    this.checkboxes.push(new SettingBox("Диаграммы, которые показывают распределение времени по состоянием задач", false, 2 ))
-    this.checkboxes.push(new SettingBox("График активности по задачам", false, 3 ))
+    //this.checkboxes.push(new SettingBox("Диаграммы, которые показывают распределение времени по состоянием задач", false, 2 ))
+    //this.checkboxes.push(new SettingBox("График активности по задачам", false, 3 ))
     this.checkboxes.push(new SettingBox("График сложности задач", false, 4 ))
     this.checkboxes.push(new SettingBox("График, отражающий приоритетность всех задач", false, 5 ))
     this.checkboxes.push(new SettingBox("График, отражающий приоритетность закрытых задач", false, 6 ))
+    // console.log(this.myProject.Name)
+    // console.log(this.myProject.Id)
+    this.dbProjectService.getProjectStatByID(this.myProject.Name.toString()).subscribe(projects => {
 
-    this.dbProjectService.getProjectStatByID(this.myProject.Id.toString()).subscribe(projects => {
-
-      this.stat.AverageIssuesCount = projects.data["allIssuesCount"]
-      this.stat.OpenIssuesCount = projects.data["openIssuesCount"]
-      this.stat.AllIssuesCount = projects.data["allIssuesCount"]
+      this.stat.AverageIssuesCount = projects.data["averageIssue"]
+      this.stat.OpenIssuesCount = projects.data["openedIssuesCount"]
+      this.stat.AllIssuesCount = projects.data["issueCount"]
       this.stat.AverageTime = projects.data["averageTime"]
-      this.stat.CloseIssuesCount = projects.data["closeIssuesCount"]
-      this.stat.ReopenedIssuesCount = projects.data["reopenedIssuesCount"]
+      this.stat.CloseIssuesCount = projects.data["closedIssuesCount"]
+      this.stat.ReopenedIssuesCount = projects.data["reopenedIssueCount"]
       this.stat.ResolvedIssuesCount = projects.data["resolvedIssuesCount"]
       this.stat.ProgressIssuesCount = projects.data["progressIssuesCount"]
 
-      console.log(projects.data)
-      console.log(this.stat)
+      // console.log(projects.data)
+      // console.log(this.stat)
     })
 
     this.dbProjectService.isAnalyzed(this.myProject.Name.toString()).subscribe(info => {
@@ -59,21 +60,23 @@ export class MyProjectComponent implements OnInit{
   }
 
   async processProject() {
-    this.dbProjectService.isEmpty(this.myProject.Name.toString()).subscribe(resp => {
-      if (resp.data["isEmpty"]){
-        alert("Project is empty, analytical tasks are not available")
-        return
-      }
-      this.dbProjectService.deleteGraphs(this.myProject.Name.toString()).subscribe(info => {
+    // this.dbProjectService.isEmpty(this.myProject.Name.toString()).subscribe(resp => {
+    //   if (resp.data["isEmpty"]){
+    //     alert("Project is empty, analytical tasks are not available")
+    //     return
+    //   }
+       this.dbProjectService.deleteGraphs(this.myProject.Name.toString()).subscribe(info => {
         this.complited = 0;
         this.checked = 0;
         this.checkboxes.forEach((box: SettingBox) => {
           if (box.Checked) {
             this.checked++
           }
+          console.log("Cheked after" + this.checked)
         })
         for (const box of this.checkboxes) {
           if (box.Checked) {
+            console.log("MAKE:" +  box.BoxId.toString() + "  " + this.myProject.Name.toString())
             this.dbProjectService.makeGraph(box.BoxId.toString(), this.myProject.Name.toString()).subscribe(info => {
               this.complited++;
             })
@@ -81,7 +84,7 @@ export class MyProjectComponent implements OnInit{
         }
         this.processed = true
       })
-    })
+     // })
   }
 
   checkResult(){
@@ -107,7 +110,7 @@ export class MyProjectComponent implements OnInit{
   }
 
   disableCheckResultButton(){
-    return !this.processed || this.checked != this.complited;
+    return false /*!this.processed || this.checked != this.complited*/;
   }
 
   disableAnalyzeButton(){
