@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: testdb
     volumes:
-      - ./volumes/initdb:/docker-entrypoint-initdb.d
+      - ./def/query_init.sql:/docker-entrypoint-initdb.d/query_init.sql
       - ./configs/pg_hba.conf:/etc/postgresql/pg_hba.conf
       - ./configs/postgresql.conf:/etc/postgresql/postgresql.conf
     ports:
