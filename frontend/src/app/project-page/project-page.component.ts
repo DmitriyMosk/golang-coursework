@@ -9,28 +9,34 @@ import {PageInfo} from "../models/pageInfo.model";
   styleUrls: ['./project-page.component.css']
 })
 export class ProjectPageComponent implements OnInit {
-  projects: IProj[] = []
+  projects: IProj[]
   loading = false
+  pr: IProj
   searchName = ''
   pageInfo: PageInfo
   start_page = 1
-
+  currentPage = 1
   constructor(private projectService: ProjectServices) {
-  }
 
+  }
+  
   ngOnInit(): void {
     this.loading = true
     this.projectService.getAll(this.start_page, this.searchName).subscribe(projects => {
       this.projects = projects.data
+      console.log(projects)
       this.loading = false
       this.pageInfo = projects.pageInfo
-      console.log(this.projects)
-      console.log(this.loading)
-      console.log(this.pageInfo)
+      this.currentPage = this.pageInfo.currentPage
     },
-      error => {
-        // TODO Обработать ошибки от сервера
-      })
+    error => {
+      if (error.status == 0){
+        alert("Unable to connect to backend")
+      }
+      if (error.status == 400){
+        alert("Unable to connect to JIRA connector")
+      }
+    })
   }
 
   gty(page: any){
