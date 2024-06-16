@@ -24,6 +24,9 @@ export class ProjectPageComponent implements OnInit {
       this.projects = projects.data
       this.loading = false
       this.pageInfo = projects.pageInfo
+      console.log(this.projects)
+      console.log(this.loading)
+      console.log(this.pageInfo)
     },
       error => {
         // TODO Обработать ошибки от сервера

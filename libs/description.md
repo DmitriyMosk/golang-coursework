@@ -1,1 +1,0 @@
-Directory for shared libraries used by various project components
