@@ -25,6 +25,10 @@ td, th {
   width: 15%;
 }
 
+.tdkey {
+  width: 10%;
+}
+
 .tdbtn {
   width: 15%;
   text-align: center;
