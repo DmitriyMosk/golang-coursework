@@ -32,7 +32,7 @@ export class CompareProjectPageComponent implements OnInit {
 
   ngOnInit(): void {
     for (let i = 0; i < this.projects.length; i++) {
-      this.dbProjectService.getProjectStatByID(this.ids[i]).subscribe(projects => {
+      this.dbProjectService.getProjectStatByID(this.projects[i]).subscribe(projects => {
         this.resultReq[i] = projects.data
       })
     }
@@ -41,19 +41,23 @@ export class CompareProjectPageComponent implements OnInit {
 
     let openTaskElem = document.getElementById('open-task') as HTMLElement;
     let openTaskTitle = document.getElementById('open-task-title') as HTMLElement;
-    this.dbProjectService.getComplitedGraph("1", this.projects).subscribe(info => {
-      if (info.data["count"] == null) {
+    this.dbProjectService.getCompletedGraph("1", this.projects).subscribe(info => {
+      if (info.data == null) {
         openTaskElem.remove()
         openTaskTitle.remove()
       }
       else{
+        console.log(info.data["categories"])
         // @ts-ignore
         openTaskChartOptions.xAxis["categories"] = info.data["categories"]
         for (let j = 0; j < this.projects.length; j++){
           var count = []
           for (let i = 0; i < info.data["categories"].length; i++){
+            console.log(info.data["graphsOne"][j]["graphOneData"].find((item: { spentTime: any; }) => item.spentTime == info.data["categories"][i])["count"])
+
             // @ts-ignore
-            count.push(info.data["count"][info.data["categories"][i]][j])
+            count.push(info.data["graphsOne"][j]["graphOneData"].find((item: { spentTime: any; }) => item.spentTime == info.data["categories"][i])["count"])
+            // count.push(info.data["count"][info.data["categories"][i]][j])
           }
           openTaskChartOptions.series?.push({ name: this.projects[j],
             type: "column",
@@ -78,12 +82,12 @@ class ReqData {
   Id: number;
   Key: string;
   Name: string;
-  allIssuesCount: number;
-  averageIssuesCount: string;
+  issueCount: number;
+  averageIssue: string;
   averageTime: number;
-  closeIssuesCount: number;
-  openIssuesCount: number;
+  closedIssuesCount: number;
+  openedIssuesCount: number;
   resolvedIssuesCount: number;
-  reopenedIssuesCount: number;
+  reopenedIssueCount: number;
   progressIssuesCount: number;
 }

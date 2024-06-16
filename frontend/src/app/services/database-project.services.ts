@@ -27,7 +27,9 @@ export class DatabaseProjectServices {
   }
 
   // @ts-ignore
-  getComplitedGraph(taskNumber: string, projectName: Array<string>): Observable<IRequestObject> {
+  getCompletedGraph(taskNumber: string, projectName: Array<string>): Observable<IRequestObject> {
+    console.log('http://' + this.urlPath + '/api/v1/graph/compare/' + taskNumber + '?project=' + projectName.toString())
+    return this.http.get<IRequest>('http://' + this.urlPath + '/api/v1/graph/compare/' + taskNumber + '?project=' + projectName.toString())
     // TODO Написать запрос на получение сравнения
   }
 
