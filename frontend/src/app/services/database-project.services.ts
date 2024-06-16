@@ -17,12 +17,14 @@ export class DatabaseProjectServices {
 
 
   // @ts-ignore
-  getAll(): Observable<IRequest>{
+  getAll(): Observable<IRequest> {
+    return this.http.get<IRequest>('http://' + this.urlPath + '/api/v1/resource/projects')
     // TODO Написать запрос на получение всех проектов
   }
 
   // @ts-ignore
-  getProjectStatByID(id: string): Observable<IRequestObject> {
+  getProjectStatByID(name: string): Observable<IRequestObject> {
+    return this.http.get<IRequest>('http://' + this.urlPath + '/api/v1/resource/project?project=' + name)
     // TODO Написать запрос на получение статистики проекта по ID
   }
 
@@ -35,26 +37,29 @@ export class DatabaseProjectServices {
 
   // @ts-ignore
   getGraph(taskNumber: string, projectName: string): Observable<IRequestObject> {
+    return this.http.get<IRequest>('http://' + this.urlPath + '/api/v1/graph/get/' + taskNumber + '?project=' + projectName)
     // TODO Написать запрос на получение графа
   }
 
   // @ts-ignore
   makeGraph(taskNumber: string, projectName: string): Observable<IRequestObject> {
+    return this.http.get<IRequest>('http://' + this.urlPath + '/api/v1/graph/make/' + taskNumber + '?project=' + projectName)
     // TODO Написать запрос на создание графа
   }
 
   // @ts-ignore
   deleteGraphs(projectName: string): Observable<IRequestObject> {
+    return this.http.get<IRequest>('http://' + this.urlPath + '/api/v1/graph/delete?project=' + projectName)
     // TODO Написать запрос на удаление графа
   }
 
   // @ts-ignore
-  isAnalyzed(projectName: string): Observable<IRequestObject>{
+  isAnalyzed(projectName: string): Observable<IRequestObject> {
     // TODO Написать запрос
   }
 
   // @ts-ignore
-  isEmpty(projectName: string): Observable<IRequestObject>{
-    // TODO Написать запрос
+  isEmpty(projectName: string): Observable<IRequestObject> {
+    return this.http.get<IRequestObject>('http://' + this.urlPath + '/api/v1/isEmpty?project=' + projectName)
   }
 }
