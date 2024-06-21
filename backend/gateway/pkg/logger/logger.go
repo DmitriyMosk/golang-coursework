@@ -4,14 +4,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/sirupsen/logrus"
 )
 
 type Logger struct {
 	logger  *logrus.Logger
-	logFile *io.Writer
-	errFile *io.Writer
+	logFile io.Writer
+	errFile io.Writer
 }
 
 type LogLevel int
@@ -29,34 +30,51 @@ func CreateNewLogger() *Logger {
 	logger.SetLevel(logrus.TraceLevel)
 	logger.SetFormatter(&logrus.JSONFormatter{})
 
-	logs, _ := os.OpenFile("backend/gateway/logs/logs.log", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
-	errors, _ := os.OpenFile("backend/gateway/logs/err_logs.log", os.O_APPEND|os.O_WRONLY, os.ModeAppend)
+	logDir := "backend/gateway/logs"
+	err := os.MkdirAll(logDir, os.ModePerm)
+	if err != nil {
+		fmt.Printf("Failed to create log directory: %v\n", err)
+		return nil
+	}
+
+	logsPath := filepath.Join(logDir, "logs.log")
+	errorsPath := filepath.Join(logDir, "err_logs.log")
+
+	logs, err := os.OpenFile(logsPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Failed to open log file: %v\n", err)
+		return nil
+	}
+
+	errors, err := os.OpenFile(errorsPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Printf("Failed to open error log file: %v\n", err)
+		return nil
+	}
 
 	logFile := io.MultiWriter(logs)
 	errFile := io.MultiWriter(os.Stdout, errors)
 
 	return &Logger{
 		logger:  logger,
-		logFile: &logFile,
-		errFile: &errFile,
+		logFile: logFile,
+		errFile: errFile,
 	}
 }
 
 func (log *Logger) Log(logLevel LogLevel, logMessage string) {
-	log.logger.Out = *log.logFile
-	if logLevel == DEBUG {
+	switch logLevel {
+	case DEBUG:
+		log.logger.Out = log.logFile
 		log.logger.Debug(logMessage)
-	} else if logLevel == INFO {
+	case INFO:
+		log.logger.Out = log.logFile
 		log.logger.Infoln(logMessage)
-	} else if logLevel == WARNING {
+	case WARNING:
+		log.logger.Out = log.errFile
 		log.logger.Warning(logMessage)
-		log.logger.Out = *log.errFile
-		log.logger.Warning(logMessage)
-		fmt.Print(logMessage)
-	} else if logLevel == ERROR {
+	case ERROR:
+		log.logger.Out = log.errFile
 		log.logger.Error(logMessage)
-		log.logger.Out = *log.errFile
-		log.logger.Error(logMessage)
-		fmt.Print(logMessage)
 	}
 }
