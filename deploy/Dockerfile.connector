@@ -1,0 +1,18 @@
+FROM golang:latest
+
+WORKDIR /golang-coursework
+
+RUN mkdir /connector 
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY /connector ./connector
+
+RUN go build -o connector/run ./connector/cmd/app/main.go
+
+ENV LOG_DIR=/connector/logs
+
+RUN mkdir -p $LOG_DIR
+
+CMD ["./connector/run"]

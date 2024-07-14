@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  analytics:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.backend.analytics
+    ports:
+      - "8002:8002"
+    volumes:
+      - ../backend/analytics/logs:/golang-coursework/backend/analytics/logs/
+    networks:
+      - my-network
+
+  gateway:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.backend.gateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../backend/gateway/logs:/golang-coursework/backend/gateway/logs/
+    networks:
+      - my-network
+
+  resource:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.backend.resource
+    ports:
+      - "8001:8001"
+    volumes:
+      - ../backend/resource/logs:/golang-coursework/backend/resource/logs
+    networks:
+      - my-network
+      
+  connector:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.connector
+    ports:
+      - "8003:8003"
+    volumes:
+      - ../connector/logs:/golang-coursework/connector/logs
+    networks:
+      - my-network
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge

@@ -1,0 +1,19 @@
+FROM golang:latest
+
+WORKDIR /golang-coursework
+
+RUN mkdir backend
+RUN mkdir backend/analytics 
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY backend/analytics ./backend/analytics
+
+RUN go build -o backend/analytics/run ./backend/analytics/cmd/app/main.go
+
+ENV LOG_DIR=/backend/analytics/logs
+
+RUN mkdir -p $LOG_DIR
+
+CMD ["./backend/analytics/run"]
