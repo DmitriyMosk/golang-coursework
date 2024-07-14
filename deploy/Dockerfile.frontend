@@ -9,4 +9,4 @@ RUN npm install -g @angular/cli@17
 
 COPY frontend .
 
-CMD ["ng", "serve"]
+CMD ["npm", "start"]

@@ -1,6 +1,13 @@
-version: '3.8'
-
 services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - my-network
+
   analytics:
     build:
       context: ..
@@ -42,15 +49,6 @@ services:
       - "8003:8003"
     volumes:
       - ../connector/logs:/golang-coursework/connector/logs
-    networks:
-      - my-network
-
-  frontend:
-    build:
-      context: ..
-      dockerfile: deploy/Dockerfile.frontend
-    ports:
-      - "4200:4200"
     networks:
       - my-network
 
