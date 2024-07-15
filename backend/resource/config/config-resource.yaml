@@ -12,6 +12,6 @@ handler:
     api_pref: /api/v1
 
   resource_http:
-    resource_host: localhost
+    resource_host: resource
     resource_port: 8001
     resource_pref: /resource

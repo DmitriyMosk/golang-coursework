@@ -19,6 +19,6 @@ handler:
     api_pref: /api/v1
 
   connector_http:
-    connector_host: localhost
+    connector_host: connector
     connector_port: 8003
     connector_pref: /connector

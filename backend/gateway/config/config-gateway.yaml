@@ -1,5 +1,5 @@
 gateway:
-  host: localhost
+  host: gateway
   port: 8000
 
 handler:
@@ -9,17 +9,17 @@ handler:
     api_pref: /api/v1
 
   resource_http:
-    resource_host: localhost
+    resource_host: resource
     resource_port: 8001
     resource_pref: /resource
 
   analytics_http:
-    analytics_host: localhost
+    analytics_host: analytics
     analytics_port: 8002
     analytics_pref: /graph
 
   connector_http:
-    connector_host: localhost
+    connector_host: connector
     connector_port: 8003
     connector_pref: /connector
 

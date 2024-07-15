@@ -12,7 +12,7 @@ handler:
     api_pref: /api/v1
 
   analytics_http:
-    analytics_host: localhost
+    analytics_host: analytics
     analytics_port: 8002
     analytics_pref: /graph
 
